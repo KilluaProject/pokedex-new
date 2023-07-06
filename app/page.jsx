@@ -1,15 +1,21 @@
-import Image from 'next/image';
-import { pokemonList } from './lib/api';
-import PokemonCard from './components/PokemonCard';
+
+import PokemonGrid from "./components/PokemonGrid"
+import { pokemonAPI } from "./lib/PokemonAPI"
+
+
 
 export default async function Home() {
-  const pokemons = await pokemonList();
+
+  const pokemonList = await pokemonAPI()
 
   return (
-    <div>
-      {pokemons.map((pokemon) => {
-        return <PokemonCard key={pokemon.name} data={pokemon} />;
-      })}
+    <div className=" container mx-auto">
+
+      <div>
+        
+      </div>
+      <PokemonGrid pokemonList={pokemonList}/>
     </div>
-  );
+
+  )
 }
