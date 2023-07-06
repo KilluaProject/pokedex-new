@@ -1,34 +1,15 @@
-
-import Image from "next/image";
-import { pokemonAPI } from "./lib/PokemonAPI"
-
-
+import Image from 'next/image';
+import { pokemonList } from './lib/api';
+import PokemonCard from './components/PokemonCard';
 
 export default async function Home() {
+  const pokemons = await pokemonList();
 
-  const getPokemonList = await pokemonAPI()
-  console.log(getPokemonList)
   return (
-
-  <div>
-    {getPokemonList((pokemon) => {
-      const id = pokemon.url.split('/')[6];
-      return (
-        <div key={pokemon.name}>
-          
-          <h1>{pokemon.name}</h1>
-          <Image
-          width={200}
-          height={200}
-          alt={pokemon.name}
-          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
-          />
-
-
-        </div>
-      )
-    })}
-  </div>
-
-  )
+    <div>
+      {pokemons.map((pokemon) => {
+        return <PokemonCard key={pokemon.name} data={pokemon} />;
+      })}
+    </div>
+  );
 }
