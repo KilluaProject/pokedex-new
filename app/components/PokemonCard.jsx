@@ -7,8 +7,6 @@ import Link from 'next/link'
 export default async function PokemonCard(props) {
   const {data} = props
   const PokemonData = await PokemonDetail(data.name)
-  
-
   const {sprites} = PokemonData
 
 
