@@ -1,46 +1,36 @@
-"use client"
-import { useEffect, useState } from "react"
-import PokemonGrid from "./components/PokemonGrid"
-
-
+'use client';
+import { useEffect, useState } from 'react';
+import PokemonGrid from './components/PokemonGrid';
+import { fetchPokemonList } from './lib/api';
 
 export default function Home() {
-
-  const [pokemonList, setPokemonList] = useState([])
-  const [loadMore, setLoadMore] = useState("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0")
+  const [pokemonList, setPokemonList] = useState([]);
+  const [pagination, setPagination] = useState({ offset: 0, limit: 15 });
 
   const getAllPokemons = async () => {
-    const res = await fetch(loadMore)
-    const data = await res.json()
+    const newPokemonList = await fetchPokemonList(pagination);
+    setPokemonList((state) => [...state, ...newPokemonList]);
+  };
 
-    setLoadMore(data.next)
-
-    function createPokemonObject(results)  {
-      results.forEach( async pokemon => {
-        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
-        const data =  await res.json()
-        setPokemonList( currentList => [...currentList, data])
-        await pokemonList.sort((a, b) => a.id - b.id)
-      })
-    }
-    createPokemonObject(data.results)
-  }
-  
   useEffect(() => {
-    getAllPokemons()
-   }, [])
+    getAllPokemons();
+  }, [pagination]);
+
+  const handleLoadMore = () => {
+    setPagination((state) => ({ ...state, offset: state.offset + state.limit }));
+  };
 
   return (
     <div className=" container mx-auto">
-
-      <PokemonGrid pokemonList={pokemonList}/>
+      <PokemonGrid pokemonList={pokemonList} />
       <div className="py-10 flex gap-2 flex justify-center items-center">
-
-      <button className="text-slate-100 rounded-lg px-3 py-1 bg-slate-900" onClick={() => getAllPokemons()}>Load More</button>
-     
-   
+        <button
+          className="text-slate-100 rounded-lg px-3 py-1 bg-slate-900"
+          onClick={handleLoadMore}
+        >
+          Load More
+        </button>
       </div>
     </div>
-
-  )
+  );
 }
